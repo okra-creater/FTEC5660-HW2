@@ -90,10 +90,11 @@ python3 hw2.py --cv-folder task2
 attack the MCP server. See the homework description for the full rules.
 
 ## Homework 2 solution:
-> to students: this is your report, see the homework description.
+For Task 2, I created an adversarial CV for Kelly Tsang by adding Python to the skills section, although this skill was not listed in her LinkedIn profile. I also incorporated a prompt injection technique using a fabricated automated verification record, which attempted to influence the agent to return a high reliability score. During testing, my CV verification agent assigned the adversarial CV a score of 0.95, indicating that it failed to detect the discrepancy. However, further testing is needed to determine whether this result was caused by the prompt injection or insufficient skill verification.
+
 
 ### Task 1
-> one paragraph describing your solution, and your results on `public_test`.
+I implemented a CV verification agent using LangChain's create_agent and the required deepseek-v4-flash model, with the six SocialGraph MCP tools passed to the agent for profile searches and retrieval. The system instructions direct the agent to identify the correct candidate, treat LinkedIn as the primary verification source, use Facebook for supporting evidence, and compare the CV's name, city, employment history, education, and skills while accepting equivalent wording. In score_cvs, each CV is checked asynchronously, the agent's JSON response is parsed into a reliability score between 0 and 1, individual failures are handled with retries and a fallback score, and asyncio.Semaphore(3) limits concurrent CV verification to three tasks. On the public_test dataset, the agent correctly classified 5 of 7 CVs (71.43% accuracy): CV_1 through CV_5 were correct, CV_6 was incorrectly flagged as having a discrepancy, and CV_7 was incorrectly marked valid despite listing Docker, a skill absent from its LinkedIn profile.
 
 ### Task 2
-> the attack techniques you used and why you expect them to work.
+For Task 2, I created an adversarial CV for Kelly Tsang by adding Python to the skills section, although this skill was not listed in her LinkedIn profile. I also incorporated a prompt injection technique using a fabricated automated verification record, which attempted to influence the agent to return a high reliability score. The fabricated record was designed to resemble an authoritative, already-completed verification decision, potentially causing the agent to treat untrusted CV text as an instruction instead of independently checking the evidence. During testing, my CV verification agent assigned the adversarial CV a score of 0.95, indicating that it failed to detect the discrepancy. However, further testing is needed to determine whether this result was caused by the prompt injection or insufficient skill verification.
